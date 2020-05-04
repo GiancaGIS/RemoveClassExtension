@@ -2,11 +2,11 @@
   <Name>StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension</Name>
   <AddInID>{533a5d55-fc81-43db-bb95-a9253e66c498}</AddInID>
   <Description>Remove a class extension or custom class from feature class</Description>
-  <Version>1.2</Version>
+  <Version>1.5</Version>
   <Image>Images\StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension.png</Image>
   <Author>nicogis</Author>
   <Company>Studio A&amp;T</Company>
-  <Date>4/4/2016</Date>
+  <Date>18/04/2020</Date>
   <Targets>
     <Target name="Desktop" version="10.4" />
   </Targets>
@@ -21,9 +21,18 @@
         </Menu>
       </Menus>
       <Commands>
-        <Button id="StudioAT_ArcGIS_ArcCatalog_AddIn_RemoveClassExtension_Remove_Class_Extension_Button" class="RemoveClassExtension" caption="Remove Class Extension" message="Remove Class Extension" category="Remove Class Extension"  image ="Images\ClassExtension.png"  onDemand ="false"/>
-        <Button id="StudioAT_ArcGIS_ArcCatalog_AddIn_RemoveClassExtension_Remove_Instance_Class_Button" class="RemoveInstanceClass" caption="Remove Instance Class" message="Remove Instance Class" category="Remove Class Extension" image ="Images\CustomFeatureClass.png" onDemand ="false"/>
+        <Button id="StudioAT_ArcGIS_ArcCatalog_AddIn_RemoveClassExtension_Remove_Class_Extension_Button" class="RemoveClassExtension" caption="Remove Class Extension" message="Remove Class Extension" category="Studio AT Remove Class Extension" image="Images\ClassExtension.png" onDemand="false" />
+        <Button id="StudioAT_ArcGIS_ArcCatalog_AddIn_RemoveClassExtension_Remove_Instance_Class_Button" class="RemoveInstanceClass" caption="Remove Instance Class" message="Remove Instance Class" category="Studio AT Remove Class Extension" image="Images\CustomFeatureClass.png" onDemand="false" />
+        <Button id="StudioAT_ArcGIS_ArcCatalog_AddIn_RemoveClassExtension_removeAllExt" class="removeAllExt" message="Remove Extension Feature Dataset" caption="Remove Extension Feature Dataset" category="Studio AT Remove Extension Feature Dataset" image="" onDemand="false" />
       </Commands>
+      <Toolbars>
+        <Toolbar id="StudioAT_ArcGIS_ArcCatalog_AddIn_RemoveClassExtension_toolbar" caption="NicoGIS Remove Extension" showInitially="false">
+          <Items>
+            <Menu refID="StudioAT_ArcGIS_ArcCatalog_AddIn_RemoveClassExtension_Remove_Class_Extension" />
+            <Button refID="StudioAT_ArcGIS_ArcCatalog_AddIn_RemoveClassExtension_removeAllExt"/>
+          </Items>
+        </Toolbar>
+      </Toolbars>
     </ArcCatalog>
   </AddIn>
 </ESRI.Configuration>
