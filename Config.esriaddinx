@@ -26,7 +26,7 @@
         <Button id="StudioAT_ArcGIS_ArcCatalog_AddIn_RemoveClassExtension_removeAllExt" class="removeAllExt" message="Remove Extension Feature Dataset" caption="Remove Extension Feature Dataset" category="Studio AT Remove Extension Feature Dataset" image="" onDemand="false" />
       </Commands>
       <Toolbars>
-        <Toolbar id="StudioAT_ArcGIS_ArcCatalog_AddIn_RemoveClassExtension_toolbar" caption="NicoGIS Remove Extension" showInitially="false">
+        <Toolbar id="StudioAT_ArcGIS_ArcCatalog_AddIn_RemoveClassExtension_toolbar" caption="NicoGIS Remove Extension (fork GiancaGIS)" showInitially="false">
           <Items>
             <Menu refID="StudioAT_ArcGIS_ArcCatalog_AddIn_RemoveClassExtension_Remove_Class_Extension" />
             <Button refID="StudioAT_ArcGIS_ArcCatalog_AddIn_RemoveClassExtension_removeAllExt"/>
