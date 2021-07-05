@@ -69,7 +69,7 @@ namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
                 stepProgressor.Hide();
                 progressDialog.HideDialog();
 
-                MessageBox.Show($@"Extension removed for {intNumberFcConverted} objects!{Environment.NewLine}{Environment.NewLine}This Annotation Feature Classes have not been changed {string.Join(" ,", listaFcAnnotation)}", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($@"Extension removed for {intNumberFcConverted} objects!{Environment.NewLine}{Environment.NewLine}This Annotation Feature Classes have not been changed: {string.Join(" ,", listaFcAnnotation)}", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             }
             catch (Exception ex)
