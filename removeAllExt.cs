@@ -61,12 +61,12 @@ namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
                 if (dialogResult == DialogResult.Yes)
                 {
                     IEnumDataset enumDataset = fDataset.Subsets;
-                    IDataset dataset = enumDataset.Next();
+                    IDataset dataset = null;
 
                     IObjectClassDescription ocDescriptionAnnotation = new AnnotationFeatureClassDescriptionClass();
                     IObjectClassDescription ocDescriptionDimension = new DimensionClassDescriptionClass();
 
-                    while (dataset != null)
+                    while ((dataset = enumDataset.Next()) != null)
                     {
                         if (dataset is IClass)
                         {
@@ -82,8 +82,6 @@ namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
                                 }
                             }
                         }
-
-                        dataset = enumDataset.Next();
                     }
 
                     MessageBox.Show("All Extension removed!", "Ok", MessageBoxButtons.OK, MessageBoxIcon.Information);

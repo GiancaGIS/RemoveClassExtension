@@ -15,11 +15,11 @@ namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
 {
     public class RemoveClassExtension : ESRI.ArcGIS.Desktop.AddIns.Button
     {
-        IGxApplication pGxApp = null;
+        private readonly IGxApplication _pGxApp = null;
 
         public RemoveClassExtension()
         {
-            this.pGxApp = ArcCatalog.Application as IGxApplication;
+            this._pGxApp = ArcCatalog.Application as IGxApplication;
         }
 
         protected override void OnClick()
@@ -28,7 +28,7 @@ namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
             {
                 List<string> listaFcAnnotation = new List<string>();
 
-                IGxSelection gxSelection = this.pGxApp.Selection;
+                IGxSelection gxSelection = this._pGxApp.Selection;
 
                 if (gxSelection.Count < 1) return;
 
@@ -69,7 +69,7 @@ namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
                 stepProgressor.Hide();
                 progressDialog.HideDialog();
 
-                MessageBox.Show($@"Extension removed for {intNumberFcConverted} objects!{Environment.NewLine}{Environment.NewLine}This Annotation Feature Classes have not been changed: {string.Join(" ,", listaFcAnnotation)}", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($@"Extension removed for {intNumberFcConverted} objects!{Environment.NewLine}{Environment.NewLine}This Annotation Feature Classes have not been changed: {string.Join(" ,", listaFcAnnotation)}{Environment.NewLine}{Environment.NewLine}Restart ArcCatalog!", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             }
             catch (Exception ex)
@@ -80,7 +80,7 @@ namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
         }
 
         private void Engine(IGxDataset pGxDataset, IGxObject pGxObject, ref int i, ref List<string> listaAnnotationNonToccate)
-        {
+        {            
             try
             {
                 IDataset dataset = pGxDataset.Dataset;
@@ -89,7 +89,7 @@ namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
             {
                 if (COMex.ErrorCode == -2147467259)
                 {
-                    if (MessageBox.Show("Not found component register so I don't see the UID: do I have to remove class extension? Are you sure?", "Remove class extension", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    if (MessageBox.Show(string.Format("Not found component register so I don't see the UID: do I have to remove class extension for {0}? Are you sure?", pGxObject.Name), "Remove class extension", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
                         try
                         {
@@ -104,8 +104,6 @@ namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
 
                             IObjectClassDescription featureClassDescription = new FeatureClassDescriptionClass();
                             featureWorkspaceSchemaEdit.AlterInstanceCLSID(pGxDataset.DatasetName.Name, featureClassDescription.InstanceCLSID);
-
-                            MessageBox.Show("Class extension removed: success! Restart ArcCatalog!", "Remove Class Extension", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         catch (Exception ex)
                         {
@@ -126,7 +124,6 @@ namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
                 MessageBox.Show("Error: " + ex.Message);
                 return;
             }
-
 
             if (!(pGxDataset.Dataset is IClass)) return;
 
@@ -150,14 +147,10 @@ namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
                     return;
                 }
 
-                if (MessageBox.Show(string.Format("Class extension: {0}: do I have to remove class extension?", pClass.EXTCLSID.Value.ToString()), "Remove Class Extension", MessageBoxButtons.YesNo)
+                if (MessageBox.Show(string.Format("Class extension {0}: do I have to remove class extension for {1}?", pClass.EXTCLSID.Value.ToString(), ((IDataset)pClass).Name), "Remove Class Extension", MessageBoxButtons.YesNo)
                     == DialogResult.Yes)
                 {
-                    if (clsGenericStudioAT.RemoveClsExt(pClass))
-                    {
-                        i++;
-                        //MessageBox.Show("Class extension removed: success!", "Remove Class Extension", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
+                    if (clsGenericStudioAT.RemoveClsExt(pClass)) i += 1;
                     else
                     {
                         MessageBox.Show("Class extension removed: error! I have problem with exclusive schema lock ", "Remove Class Extension", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -168,7 +161,7 @@ namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
 
         protected override void OnUpdate()
         {
-            if (this.pGxApp.Selection.Count < 0)
+            if (this._pGxApp.Selection.Count < 0)
             {
                 this.Enabled = false;
                 return;
