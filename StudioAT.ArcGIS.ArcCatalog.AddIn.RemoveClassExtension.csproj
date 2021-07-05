@@ -96,6 +96,8 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="generic.cs" />
+    <Compile Include="removeAllExt.cs" />
     <Compile Include="RemoveClassExtension.cs" />
     <Compile Include="Config.Designer.cs">
       <AutoGen>True</AutoGen>

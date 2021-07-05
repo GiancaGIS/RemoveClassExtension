@@ -1,26 +1,24 @@
-﻿namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using ESRI.ArcGIS.CatalogUI;
-    using ESRI.ArcGIS.Geodatabase;
-    using ESRI.ArcGIS.Catalog;
-    using System.Runtime.InteropServices;
-    using System.Windows.Forms;
-    using ESRI.ArcGIS.esriSystem;
-    using ESRI.ArcGIS.Carto;
+﻿using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.Catalog;
+using ESRI.ArcGIS.CatalogUI;
+using ESRI.ArcGIS.esriSystem;
+using ESRI.ArcGIS.Geodatabase;
+using System;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
+
+namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
+{
     public class RemoveInstanceClass : ESRI.ArcGIS.Desktop.AddIns.Button
     {
-        IGxApplication pGxApp = null;
-        IObjectClassDescription featureClassDescription = null;
+        private readonly IGxApplication _pGxApp = null;
+        private readonly IObjectClassDescription _featureClassDescription = null;
 
         public RemoveInstanceClass()
         {
-            this.pGxApp = ArcCatalog.Application as IGxApplication;
-            this.featureClassDescription = new FeatureClassDescriptionClass();
+            this._pGxApp = ArcCatalog.Application as IGxApplication;
+            this._featureClassDescription = new FeatureClassDescriptionClass();
             
         }
 
@@ -28,30 +26,15 @@
         {
             try
             {
-                if (this.pGxApp.Selection.Count != 1)
-                {
-                    return;
-                }
+                if (this._pGxApp.Selection.Count != 1) return;
 
+                IGxObject pGxObject = this._pGxApp.SelectedObject;
 
-                IGxObject pGxObject = this.pGxApp.SelectedObject;
+                if (!(pGxObject is IGxDataset)) return;
 
+                if (!(pGxObject is IGxDataset pGxDataset)) return;
 
-                if (!(pGxObject is IGxDataset))
-                {
-                    return;
-                }
-
-                IGxDataset pGxDataset = pGxObject as IGxDataset;
-                if (pGxDataset == null)
-                {
-                    return;
-                }
-
-                if (((pGxObject as IGxDataset).Type) != esriDatasetType.esriDTFeatureClass)
-                {
-                    return;
-                }
+                if (((pGxObject as IGxDataset).Type) != esriDatasetType.esriDTFeatureClass) return;
 
                 try
                 {
@@ -73,7 +56,7 @@
 
                                 IFeatureWorkspaceSchemaEdit featureWorkspaceSchemaEdit = ((gxObject as IGxDatabase2).Workspace) as IFeatureWorkspaceSchemaEdit;
 
-                                featureWorkspaceSchemaEdit.AlterInstanceCLSID(pGxDataset.DatasetName.Name, this.featureClassDescription.InstanceCLSID);
+                                featureWorkspaceSchemaEdit.AlterInstanceCLSID(pGxDataset.DatasetName.Name, this._featureClassDescription.InstanceCLSID);
 
                                 MessageBox.Show("Instance class removed: success! Restart ArcCatalog!", "Remove instance Extension", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
@@ -106,7 +89,7 @@
                 IClass pClass = pGxDataset.Dataset as IClass;
 
 
-                if ((pClass.CLSID.Value.ToString() == this.featureClassDescription.InstanceCLSID.Value.ToString()) && (pClass.CLSID.SubType == this.featureClassDescription.InstanceCLSID.SubType))
+                if ((pClass.CLSID.Value.ToString() == this._featureClassDescription.InstanceCLSID.Value.ToString()) && (pClass.CLSID.SubType == this._featureClassDescription.InstanceCLSID.SubType))
                 {
                     MessageBox.Show("No instance class found!");
                     return;
@@ -190,13 +173,13 @@
 
         protected override void OnUpdate()
         {
-            if (this.pGxApp.Selection.Count != 1)
+            if (this._pGxApp.Selection.Count != 1)
             {
                 this.Enabled = false;
                 return;
             }
 
-            IGxObject pGxObject = this.pGxApp.SelectedObject;
+            IGxObject pGxObject = this._pGxApp.SelectedObject;
 
             this.Enabled = ((pGxObject as IGxDataset) != null) && ((pGxObject as IGxDataset).Type == esriDatasetType.esriDTFeatureClass);
 
@@ -204,7 +187,7 @@
 
         private bool RemoveClsInstance(IClass classInstance)
         {
-            return this.RemoveClsInstance(classInstance, this.featureClassDescription.InstanceCLSID);
+            return this.RemoveClsInstance(classInstance, this._featureClassDescription.InstanceCLSID);
         }
 
         private bool RemoveClsInstance(IClass classInstance, UID uid)

@@ -2,11 +2,11 @@
   <Name>StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension</Name>
   <AddInID>{533a5d55-fc81-43db-bb95-a9253e66c498}</AddInID>
   <Description>Remove a class extension or custom class from feature class</Description>
-  <Version>1.5</Version>
+  <Version>1.6</Version>
   <Image>Images\StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension.png</Image>
-  <Author>nicogis</Author>
+  <Author>NicoGIS, fork GiancaGIS</Author>
   <Company>Studio A&amp;T</Company>
-  <Date>18/04/2020</Date>
+  <Date>05/07/2021</Date>
   <Targets>
     <Target name="Desktop" version="10.4" />
   </Targets>

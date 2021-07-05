@@ -1,16 +1,18 @@
-﻿namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
-{
-    using ESRI.ArcGIS.Carto;
-    using ESRI.ArcGIS.Catalog;
-    using ESRI.ArcGIS.CatalogUI;
-    using ESRI.ArcGIS.esriSystem;
-    using ESRI.ArcGIS.Framework;
-    using ESRI.ArcGIS.Geodatabase;
-    using StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension.Generic;
-    using System;
-    using System.Runtime.InteropServices;
-    using System.Windows.Forms;
+﻿using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.Catalog;
+using ESRI.ArcGIS.CatalogUI;
+using ESRI.ArcGIS.esriSystem;
+using ESRI.ArcGIS.Framework;
+using ESRI.ArcGIS.Geodatabase;
+using StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension.Generic;
+using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
+
+namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
+{
     public class RemoveClassExtension : ESRI.ArcGIS.Desktop.AddIns.Button
     {
         IGxApplication pGxApp = null;
@@ -24,12 +26,11 @@
         {
             try
             {
-                IGxSelection gxSelection = this.pGxApp.Selection; 
-                
-                if (gxSelection.Count < 1)
-                {
-                    return;
-                }
+                List<string> listaFcAnnotation = new List<string>();
+
+                IGxSelection gxSelection = this.pGxApp.Selection;
+
+                if (gxSelection.Count < 1) return;
 
                 // Inizializzo le variabili per la progress bar...
                 ITrackCancel trkCancel = null;
@@ -53,36 +54,22 @@
                 stepProgressor.StepValue = 1;
                 stepProgressor.Show();
 
-                IGxObject pGxObject = enumGxObject.Next();
+                IGxObject pGxObject = null;
 
-                while (pGxObject != null)
+                while ((pGxObject = enumGxObject.Next()) != null)
                 {
-                    if (!(pGxObject is IGxDataset))
-                    {
-                        return;
-                    }
+                    if (!(pGxObject is IGxDataset)) return;
 
-                    IGxDataset pGxDataset = pGxObject as IGxDataset;
-                    if (pGxDataset == null)
-                    {
-                        return;
-                    }
+                    if (!(pGxObject is IGxDataset pGxDataset)) return;
 
-                    //if (((pGxObject as IGxDataset).Type) != esriDatasetType.esriDTFeatureClass)
-                    //{
-                    //    return;
-                    //}
-
-                    this.engine(pGxDataset, pGxObject, ref intNumberFcConverted);
-                    pGxObject = enumGxObject.Next();
+                    this.Engine(pGxDataset, pGxObject, ref intNumberFcConverted, ref listaFcAnnotation);                   
                     stepProgressor.Step();
                 }
-
                 stepProgressor.Message = "End";
                 stepProgressor.Hide();
                 progressDialog.HideDialog();
 
-                MessageBox.Show($@"Extension removed for {intNumberFcConverted} objects!", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($@"Extension removed for {intNumberFcConverted} objects!{Environment.NewLine}{Environment.NewLine}This Annotation Feature Classes have not been changed {string.Join(" ,", listaFcAnnotation)}", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             }
             catch (Exception ex)
@@ -92,7 +79,7 @@
 
         }
 
-        private void engine(IGxDataset pGxDataset, IGxObject pGxObject, ref int i)
+        private void Engine(IGxDataset pGxDataset, IGxObject pGxObject, ref int i, ref List<string> listaAnnotationNonToccate)
         {
             try
             {
@@ -141,25 +128,18 @@
             }
 
 
-            if (!(pGxDataset.Dataset is IClass))
-            {
-                return;
-            }
+            if (!(pGxDataset.Dataset is IClass)) return;
 
             IClass pClass = pGxDataset.Dataset as IClass;
 
-            if (pClass.EXTCLSID == null)
-            {
-                //MessageBox.Show("No class extension!");
-                return;
-            }
+            if (pClass.EXTCLSID == null) return;
             else
             {
 
                 IObjectClassDescription ocDescription = new AnnotationFeatureClassDescriptionClass();
                 if ((pClass.EXTCLSID.Value.ToString() == ocDescription.ClassExtensionCLSID.Value.ToString()) && (pClass.EXTCLSID.SubType == ocDescription.ClassExtensionCLSID.SubType))
                 {
-                    MessageBox.Show("Class extension well-know: I don't remove it (annotation)!", "Remove Class Extension", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    listaAnnotationNonToccate.Add(((IDataset)pClass).Name);
                     return;
                 }
 
@@ -170,7 +150,7 @@
                     return;
                 }
 
-                if (MessageBox.Show(string.Format("Class extension: {0}: do I have to remove class extension?", pClass.EXTCLSID.Value.ToString()), "Remove Class Extension", MessageBoxButtons.YesNo) 
+                if (MessageBox.Show(string.Format("Class extension: {0}: do I have to remove class extension?", pClass.EXTCLSID.Value.ToString()), "Remove Class Extension", MessageBoxButtons.YesNo)
                     == DialogResult.Yes)
                 {
                     if (clsGenericStudioAT.RemoveClsExt(pClass))
