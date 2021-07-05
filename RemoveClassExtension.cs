@@ -104,6 +104,7 @@ namespace StudioAT.ArcGIS.ArcCatalog.AddIn.RemoveClassExtension
 
                             IObjectClassDescription featureClassDescription = new FeatureClassDescriptionClass();
                             featureWorkspaceSchemaEdit.AlterInstanceCLSID(pGxDataset.DatasetName.Name, featureClassDescription.InstanceCLSID);
+                            i += 1;
                         }
                         catch (Exception ex)
                         {
